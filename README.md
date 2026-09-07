@@ -1,12 +1,11 @@
 # MathQuiz (さんすう けいさん) - Web アプリケーション
 
-Kotlin (Android / Jetpack Compose) で作成された算数学習アプリ「MathQuiz」を、HTML5 / CSS3 / JavaScript (Vanilla JS) でブラウザ向けに忠実に移植・再構築したWebアプリケーションです。
 
 ---
 
 ## 🌟 特徴と主な機能
 
-1. **完全な出題ロジック移植 (`js/logic.js`)**:
+1. **出題ロジック (`js/logic.js`)**:
    - 足し算（`+`）、引き算（`-`）、掛け算（`×`）の個別・複合出題
    - 数の大きさ（最大値 1〜99）の指定
    - 繰り上がり・繰り下がりの制御（「あり」「なし」「両方」）
@@ -36,35 +35,3 @@ Kotlin (Android / Jetpack Compose) で作成された算数学習アプリ「Mat
    - Google Fonts (Zen Maru Gothic / M PLUS Rounded 1c) を採用した子供にも読みやすい丸ゴシック
    - スマホ縦向き、スマホ横向き（キーパッド横分割レイアウト）、タブレット、PC画面に完全対応
 
----
-
-## 🚀 起動方法
-
-### ブラウザで直接開く場合
-`index.html` ファイルを Google Chrome, Edge, Safari などのブラウザでダブルクリックまたはドラッグ＆ドロップして開くだけで動作します。
-
-### ローカルWebサーバーで動かす場合
-```bash
-# Python を使用する場合
-python -m http.server 8080
-
-# または Node.js を使用する場合
-npx serve .
-```
-ブラウザで `http://localhost:8080` を開きます。
-
----
-
-## 📁 ファイル構成
-
-```
-MathQuiz/
-├── index.html            # メインHTML（全画面構造・UIコンポーネント）
-├── README.md             # アプリケーション仕様・起動説明書
-├── css/
-│   └── style.css         # デザインシステム・アニメーション・レスポンシブ
-├── js/
-│   └── app.js            # アプリケーション全体の統合スクリプト（file:// & http:// 両対応）
-└── assets/
-    └── favicon.svg       # 星付きゴールドメダル SVG アイコン
-```

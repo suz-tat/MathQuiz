@@ -103,10 +103,19 @@
       // Cookie / ストレージ同意
       cookieTitle: { ja: 'データのほぞん について', en: 'Data Storage Notice' },
       cookieDesc: {
-        ja: 'このアプリでは、メダルのかず や せってい、にがてな もんだい を きろくするために ブラウザの ほぞんきのう（ストレージ / Cookie）を つかっています。',
-        en: 'This app uses browser storage (Cookies / LocalStorage) to save your medal progress, settings, and weak questions.'
+        ja: 'このアプリでは、メダルのかず や せってい、にがてな もんだい を きろくするために ブラウザの ほぞんきのう（ストレージ / Cookie）を つかっています。ほぞんした データ は、「せってい」がめん から いつでも さくじょ できます。',
+        en: 'This app uses browser storage (Cookies / LocalStorage) to save your medal progress, settings, and weak questions. You can delete saved data anytime from the Settings screen.'
       },
-      cookieAgree: { ja: '同意する（わかった！）', en: 'Agree (Got it!)' }
+      cookieAgree: { ja: '同意する（わかった！）', en: 'Agree (Got it!)' },
+
+      // Cookie / ストレージ削除
+      deleteCookieTitle: { ja: 'クッキーを削除する', en: 'Delete Cookies' },
+      deleteCookieSub: { ja: '同意じょうたい や ほぞんデータ を さくじょ', en: 'Reset cookie consent and all data' },
+      deleteCookieBtn: { ja: '削除', en: 'Delete' },
+      deleteCookieConfirm: {
+        ja: 'クッキー（ほぞんデータ）を 削除しますか？\n（同意じょうたい や これまでの記録がすべてリセットされます）',
+        en: 'Do you want to delete cookies and all stored data?'
+      }
     }
   };
 
@@ -261,6 +270,23 @@
 
     clearWrongQuestions() {
       this.saveWrongQuestions([]);
+    },
+
+    clearAllData() {
+      try {
+        localStorage.clear();
+        if (typeof document !== 'undefined' && document.cookie) {
+          const cookies = document.cookie.split(';');
+          for (let i = 0; i < cookies.length; i++) {
+            const cookie = cookies[i];
+            const eqPos = cookie.indexOf('=');
+            const name = eqPos > -1 ? cookie.substr(0, eqPos).trim() : cookie.trim();
+            document.cookie = name + '=;expires=Thu, 01 Jan 1970 00:00:00 GMT;path=/';
+          }
+        }
+      } catch (e) {
+        console.error('Failed to clear all storage and cookies', e);
+      }
     }
   };
 
@@ -735,6 +761,9 @@
       document.getElementById('chip-count-20').textContent = L10n.get(d.q20.ja, d.q20.en);
       document.getElementById('txt-set-coins-title').textContent = L10n.get(d.totalCoins.ja, d.totalCoins.en);
       document.getElementById('btn-reset-coins').textContent = L10n.get(d.reset.ja, d.reset.en);
+      document.getElementById('txt-set-cookie-title').textContent = L10n.get(d.deleteCookieTitle.ja, d.deleteCookieTitle.en);
+      document.getElementById('txt-set-cookie-sub').textContent = L10n.get(d.deleteCookieSub.ja, d.deleteCookieSub.en);
+      document.getElementById('txt-set-cookie-btn').textContent = L10n.get(d.deleteCookieBtn.ja, d.deleteCookieBtn.en);
       document.getElementById('txt-set-back').textContent = L10n.get(d.back.ja, d.back.en);
 
       document.getElementById('key-del').textContent = L10n.get(d.del.ja, d.del.en);
@@ -921,6 +950,23 @@
           this.updateSettingsScreenUI();
         }
       });
+
+      const deleteCookieBtn = document.getElementById('btn-delete-cookie');
+      if (deleteCookieBtn) {
+        deleteCookieBtn.addEventListener('click', () => {
+          Audio.playTap();
+          if (confirm(L10n.get(L10n.dict.deleteCookieConfirm.ja, L10n.dict.deleteCookieConfirm.en))) {
+            Storage.clearAllData();
+            this.settings = { ...DefaultSettings };
+            this.totalCorrectCount = 0;
+            this.updateHomeScreenUI();
+            this.updateSettingsScreenUI();
+            this.updateSoundToggleUI();
+            this.checkCookieConsent();
+            this.navigateTo('home');
+          }
+        });
+      }
 
       document.getElementById('keypad').addEventListener('click', (e) => {
         const btn = e.target.closest('.key-btn');
